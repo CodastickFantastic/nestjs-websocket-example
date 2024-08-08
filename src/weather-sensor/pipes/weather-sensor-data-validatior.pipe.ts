@@ -1,15 +1,19 @@
-import { Injectable, PipeTransform } from "@nestjs/common";
-import { WsException } from "@nestjs/websockets";
-import { plainToInstance } from "class-transformer";
-import { validateOrReject, ValidationError } from "class-validator";
-import { CreateSensorDataDTO } from "src/weather-sensor/dto/weather-sensor-data.dto";
+import { Injectable, PipeTransform } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject, ValidationError } from 'class-validator';
+import { CreateSensorDataDTO } from '../dto/weather-sensor-data.dto';
+
 @Injectable()
 export class WeatherSensorDataValidatorPipe implements PipeTransform {
     async transform(data: any) {
         try {
-            const json = JSON.parse(data);
-            const createMessageDTO = plainToInstance(CreateSensorDataDTO, json);
-            await validateOrReject(createMessageDTO, { whitelist: true, forbidNonWhitelisted: true, })
+            const json: CreateSensorDataDTO = JSON.parse(data);
+            const createWeatherDataDto = plainToInstance(CreateSensorDataDTO, json);
+            await validateOrReject(createWeatherDataDto, {
+                whitelist: true,
+                forbidNonWhitelisted: true,
+            });
             return json;
         } catch (errors) {
             if (Array.isArray(errors) && errors[0] instanceof ValidationError) {
@@ -22,7 +26,7 @@ export class WeatherSensorDataValidatorPipe implements PipeTransform {
                     errors: validationErrors,
                 });
             } else {
-                throw new WsException('An unexpected error occurred');
+                throw new WsException('Unexpected error: ' + (errors as Error).message);
             }
         }
     }
