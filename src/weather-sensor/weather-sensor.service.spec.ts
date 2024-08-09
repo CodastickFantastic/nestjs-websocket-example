@@ -72,7 +72,7 @@ describe('WeatherSensorService', () => {
     expect(resultObj.temperature).toBe(inputData.temperature);
     expect(resultObj.humidity).toBe(inputData.humidity);
     expect(resultObj).toHaveProperty('createdAt');
-    expect(resultObj.createdAt).toBeInstanceOf(Date);
+    expect(new Date(resultObj.createdAt)).toBeInstanceOf(Date);
   });
 
   // Testing create function with invalid data
