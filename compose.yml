@@ -1,6 +1,6 @@
 services:
     mongo:
-      image: mongo
+      image: mongo:latest
       restart: always
       container_name: mongo
       ports:
@@ -9,7 +9,20 @@ services:
         MONGO_INITDB_ROOT_USERNAME: db_user_name
         MONGO_INITDB_ROOT_PASSWORD: db_user_password
         MONGO_INITDB_DATABASE: db_name
-        
       volumes:
-        - ./db_data/:/data/db/ 
+        - db_data:/data/db/ 
         - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+    weather-app:
+      depends_on: 
+        - mongo
+      build:
+        context: .
+        target: production
+      ports:
+        - 3000:3000
+      environment:
+        MONGO_URI: mongodb://db_user_name:db_user_password@mongo:27017/db_name
+
+volumes:
+  db_data: 
