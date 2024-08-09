@@ -5,4 +5,4 @@ import { WeatherSensorService } from './weather-sensor.service';
 @Module({
   providers: [WeatherSensorGateway, WeatherSensorService]
 })
-export class WeatherSensorModule {}
+export class WeatherSensorModule { }
