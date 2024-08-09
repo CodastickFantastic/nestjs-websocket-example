@@ -22,7 +22,7 @@ export class WeatherSensorGateway implements OnGatewayInit, OnGatewayConnection,
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
-    this.server.emit("message",
+    this.server.emit("welcome",
       {
         "Welcome": "to the socket server.",
         "Example": "JSON",
