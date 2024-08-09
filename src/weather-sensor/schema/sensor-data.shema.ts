@@ -16,6 +16,9 @@ export class SensorData {
 
     @Prop({ required: true, min: 0, max: 100 })
     humidity: number
+
+    @Prop({ default: Date.now })
+    createdAt: Date
 }
 
 export const SensorDataSchema = SchemaFactory.createForClass(SensorData)
