@@ -8,13 +8,13 @@ import { CreateSensorDataDTO } from '../dto/weather-sensor-data.dto';
 export class WeatherSensorDataValidatorPipe implements PipeTransform {
     async transform(data: any) {
         try {
-            const json: CreateSensorDataDTO = JSON.parse(data);
-            const createWeatherDataDto = plainToInstance(CreateSensorDataDTO, json);
+            if (typeof data !== 'object') throw new Error('Input must be a JSON object');
+            const createWeatherDataDto = plainToInstance(CreateSensorDataDTO, data);
             await validateOrReject(createWeatherDataDto, {
                 whitelist: true,
                 forbidNonWhitelisted: true,
             });
-            return json;
+            return data;
         } catch (errors) {
             if (Array.isArray(errors) && errors[0] instanceof ValidationError) {
                 // Create a validation error object
@@ -26,7 +26,7 @@ export class WeatherSensorDataValidatorPipe implements PipeTransform {
                     errors: validationErrors,
                 });
             } else {
-                throw new WsException('Unexpected error: ' + (errors as Error).message);
+                throw new WsException(errors.message);
             }
         }
     }
