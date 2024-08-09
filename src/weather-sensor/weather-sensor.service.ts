@@ -28,4 +28,13 @@ export class WeatherSensorService {
             throw new WsException(`DB Create Error:${error.message}`);
         }
     }
+
+    async findAll() {
+        try {
+            let sensorData = await this.model.find()
+            return { event: "message", data: sensorData };
+        } catch (error) {
+            throw new WsException(`DB Read Error:${error.message}`);
+        }
+    }
 }

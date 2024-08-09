@@ -45,4 +45,9 @@ export class WeatherSensorGateway implements OnGatewayInit, OnGatewayConnection,
   async create(@MessageBody(WeatherSensorDataValidatorPipe) data: any) {
     return this.weatherSensorService.create(data);
   }
+
+  @SubscribeMessage("show all sensor data")
+  async findAll() {
+    return this.weatherSensorService.findAll();
+  }
 }
