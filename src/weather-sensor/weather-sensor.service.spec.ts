@@ -12,6 +12,7 @@ describe('WeatherSensorService', () => {
   let dummyMongo: MongoMemoryServer
   let mongoConn: Connection
 
+  // Connect to DummyMongoDB before all tests
   beforeAll(async () => {
     dummyMongo = await MongoMemoryServer.create();
     const uri = dummyMongo.getUri();
@@ -19,12 +20,14 @@ describe('WeatherSensorService', () => {
     mongoConn = (await mongoose.connect(uri)).connection;
   });
 
+  // Disconnect from DummyMongoDB after all tests
   afterAll(async () => {
     await mongoConn.dropDatabase();
     await mongoConn.close();
     await dummyMongo.stop();
   });
 
+  // Connect to DummyMongoDB before each test
   beforeEach(async () => {
     module = await Test.createTestingModule({
       imports: [
@@ -37,12 +40,14 @@ describe('WeatherSensorService', () => {
     service = module.get<WeatherSensorService>(WeatherSensorService);
   });
 
+  // Disconnect from DummyMongoDB after each test and drop Dummy DB
   afterEach(async () => {
     // Drop Dummy DB after each test
     await mongoConn.dropDatabase();
     await module.close();
   });
 
+  // Testing initialization
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(dummyMongo).toBeDefined();
