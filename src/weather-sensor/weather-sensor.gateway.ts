@@ -22,13 +22,19 @@ export class WeatherSensorGateway implements OnGatewayInit, OnGatewayConnection,
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
-    const { sockets } = this.server.sockets;
+    this.server.emit("message",
+      {
+        "Welcome": "to the socket server.",
+        "Example": "JSON",
+        "--": "----",
+        "weatherDataOjbect": {
+          "sensor_id": "1",
+          "temperatureUnit": "C",
+          "temperature": "10",
+          "humidity": "20"
+        }
 
-    this.logger.warn(`Client id: ${client.id} connected`);
-    this.logger.debug(`Number of connected clients: ${sockets.size}`);
-
-    // Send message to client on connection
-    this.server.emit("message", "Connected to socket");
+      });
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -36,11 +42,7 @@ export class WeatherSensorGateway implements OnGatewayInit, OnGatewayConnection,
   }
 
   @SubscribeMessage("create sensor data")
-  async create(@MessageBody(WeatherSensorDataValidatorPipe) data: any, @ConnectedSocket() client: Socket): Promise<void> {
-    // Log connection
-    this.logger.log(`Client ${client.id} sent weather data to create`);
-
-
-    this.server.to(client.id).emit("message", data);
+  async create(@MessageBody(WeatherSensorDataValidatorPipe) data: any) {
+    return this.weatherSensorService.create(data);
   }
 }
